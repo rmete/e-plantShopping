@@ -220,27 +220,6 @@ function ProductList() {
         ]
     }
 ];
-
-const styleObj={
-    backgroundColor: '#4CAF50',
-    color: '#fff!important',
-    padding: '15px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignIems: 'center',
-    fontSize: '20px',
-   }
-   const styleObjUl={
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '1100px',
-   }
-   const styleA={
-    color: 'white',
-    fontSize: '30px',
-    textDecoration: 'none',
-   }
   useEffect(() => {
     // Sync with cartItems to handle disabling the Add to Cart button after refresh
     const cartState = {};
@@ -293,10 +272,12 @@ const styleObj={
             </a>
           </div>
         </div>
-        <div className="navbar-links">
+        <div className="navbar-center">
           <a href="#" onClick={handlePlantsClick} className="navbar-link">
             Plants
           </a>
+        </div>
+        <div className="navbar-right">
           <a href="#" onClick={handleCartClick} className="navbar-link">
             <div className="cart-icon-container">
               <svg
