@@ -17,12 +17,11 @@ const CartItem = ({ onContinueShopping }) => {
       .toFixed(2);
   };
 
-  const handleContinueShopping = (e) => {
-    e.preventDefault();
+  const handleContinueShopping = () => {
     onContinueShopping();
   };
 
-  const handleCheckoutShopping = (e) => {
+  const handleCheckoutShopping = () => {
     alert('Functionality to be added for future reference');
   };
 

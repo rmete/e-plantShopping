@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from './CartSlice';
 
 function ProductList() {
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const [addedToCart, setAddedToCart] = useState({});
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(true); // Show plants by default
@@ -218,7 +220,6 @@ function ProductList() {
     }
 ];
 
-
   const navbarStyle = {
     backgroundColor: '#4CAF50',
     color: '#fff',
@@ -255,8 +256,7 @@ function ProductList() {
     setShowCart(false);
   };
 
-  const handleContinueShopping = (e) => {
-    e.preventDefault();
+  const handleContinueShopping = () => {
     setShowCart(false);
     setShowPlants(true);
   };
@@ -292,17 +292,35 @@ function ProductList() {
             Plants
           </a>
           <a href="#" onClick={handleCartClick} style={linkStyle}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 256 256"
-              height="28"
-              width="28"
-              fill="white"
-            >
-              <path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" />
-              <circle cx="80" cy="216" r="12" />
-              <circle cx="184" cy="216" r="12" />
-            </svg>
+            <div style={{ position: 'relative' }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 256 256"
+                height="28"
+                width="28"
+                fill="white"
+              >
+                <path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" />
+                <circle cx="80" cy="216" r="12" />
+                <circle cx="184" cy="216" r="12" />
+              </svg>
+              {totalQuantity > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-5px',
+                    right: '-10px',
+                    backgroundColor: 'red',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '2px 6px',
+                    fontSize: '12px',
+                  }}
+                >
+                  {totalQuantity}
+                </span>
+              )}
+            </div>
           </a>
         </div>
       </div>
@@ -328,9 +346,8 @@ function ProductList() {
                     <button
                       className="product-button"
                       onClick={() => handleAddToCart(plant)}
-                      disabled={addedToCart[plant.name]}
                     >
-                      {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
+                      Add to Cart
                     </button>
                   </div>
                 ))}
