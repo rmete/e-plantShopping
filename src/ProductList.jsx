@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ function ProductList() {
   const cartItems = useSelector((state) => state.cart.items);
   const totalQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const [addedToCart, setAddedToCart] = useState({});
+
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(true); // Show plants by default
 
@@ -220,29 +221,14 @@ function ProductList() {
     }
 ];
 
-  const navbarStyle = {
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    padding: '15px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    fontSize: '20px',
-  };
-
-  const navbarLinksStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '400px',
-  };
-
-  const linkStyle = {
-    color: 'white',
-    fontSize: '20px',
-    textDecoration: 'none',
-    margin: '0 10px',
-  };
+  useEffect(() => {
+    // Sync with cartItems to handle disabling the Add to Cart button after refresh
+    const cartState = {};
+    cartItems.forEach(item => {
+      cartState[item.name] = true;
+    });
+    setAddedToCart(cartState);
+  }, [cartItems]);
 
   const handleCartClick = (e) => {
     e.preventDefault();
@@ -271,15 +257,15 @@ function ProductList() {
 
   return (
     <div>
-      <div className="navbar" style={navbarStyle}>
+      <div className="navbar">
         <div className="tag">
           <div className="luxury">
             <img
               src="https://cdn.pixabay.com/photo/2020/08/05/13/12/eco-5465432_1280.png"
               alt=""
-              style={{ width: '50px', marginRight: '10px' }}
+              className="navbar-logo"
             />
-            <a href="/" style={{ textDecoration: 'none', color: 'white' }}>
+            <a href="/" className="navbar-logo-link">
               <div>
                 <h3>Paradise Nursery</h3>
                 <i>Where Green Meets Serenity</i>
@@ -287,13 +273,14 @@ function ProductList() {
             </a>
           </div>
         </div>
-        <div style={navbarLinksStyle}>
-          <a href="#" onClick={handlePlantsClick} style={linkStyle}>
+        <div className="navbar-links">
+          <a href="#" onClick={handlePlantsClick} className="navbar-link">
             Plants
           </a>
-          <a href="#" onClick={handleCartClick} style={linkStyle}>
-            <div style={{ position: 'relative' }}>
+          <a href="#" onClick={handleCartClick} className="navbar-link">
+            <div className="cart-icon-container">
               <svg
+                className="cart-icon"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 256 256"
                 height="28"
@@ -305,18 +292,7 @@ function ProductList() {
                 <circle cx="184" cy="216" r="12" />
               </svg>
               {totalQuantity > 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '-5px',
-                    right: '-10px',
-                    backgroundColor: 'red',
-                    color: 'white',
-                    borderRadius: '50%',
-                    padding: '2px 6px',
-                    fontSize: '12px',
-                  }}
-                >
+                <span className="cart-quantity-badge">
                   {totalQuantity}
                 </span>
               )}
@@ -344,10 +320,11 @@ function ProductList() {
                     </div>
                     <div className="product-cost">{plant.cost}</div>
                     <button
-                      className="product-button"
+                      className={`product-button ${addedToCart[plant.name] ? 'added-to-cart' : ''}`}
                       onClick={() => handleAddToCart(plant)}
+                      disabled={addedToCart[plant.name]}
                     >
-                      Add to Cart
+                      {addedToCart[plant.name] ? 'Added to Cart' : 'Add to Cart'}
                     </button>
                   </div>
                 ))}
